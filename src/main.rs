@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate text_io;
 use ansi_term::Colour;
+use std::io::stdout;
+use std::io::Write;
 
 fn clear() {
     print!("{}[2J", 27 as char);
@@ -43,8 +45,13 @@ fn draw_board(board: [&str; 9]) {
     println!("");
 }
 
-fn get_move() -> usize {
+fn get_move(player: &str) -> usize {
     loop {
+        print!(
+            "Player {}, place your marker: ",
+            colourize(player.to_string())
+        );
+        stdout().flush().expect("Could not flush stdout.");
         let input: String = read!("{}\n");
         input.trim().to_string();
         match input.parse::<i32>() {
@@ -86,11 +93,7 @@ fn main() {
             break;
         }
         draw_board(board);
-        println!(
-            "Player {}, place your marker: ",
-            colourize(player.to_string())
-        );
-        let move_ = get_move();
+        let move_ = get_move(player);
         if available(board, move_) {
             turns += 1;
             board[move_] = player;
