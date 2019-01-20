@@ -12,7 +12,7 @@ fn colourize(piece: String) -> String {
     match piece.as_ref() {
         "X" => Colour::Blue.bold().paint(piece).to_string(),
         "O" => Colour::Yellow.bold().paint(piece).to_string(),
-        _ => Colour::White.bold().paint(piece).to_string(),
+        _ => piece.to_string(),
     }
 }
 
