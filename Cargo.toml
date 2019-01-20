@@ -1,0 +1,9 @@
+[package]
+name = "rusttactoe"
+version = "0.1.0"
+authors = ["Bjarke Sørensen <bs@wasd.dk>"]
+edition = "2018"
+
+[dependencies]
+text_io = "0.1.7"
+ansi_term = "0.11.0"
