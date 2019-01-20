@@ -30,14 +30,24 @@ fn draw_board(board: [&str; 9]) {
     println!("");
 }
 
-fn get_move() -> String {
-    let input: String = read!("{}\n");
-    input.trim().to_string()
+fn get_move() -> usize {
+    loop {
+        let input: String = read!("{}\n");
+        input.trim().to_string();
+        match input.parse::<i32>() {
+            Ok( _) => return input.parse::<usize>().unwrap() - 1,
+            Err(_) => println!("Invalid input."),
+        }
+
+    }
 }
 
 fn winner(board: [&str; 9]) -> bool {
+    // 012
+    // 345
+    // 678
     (board[0] == board[1]) && (board[1] == board[2])
-        || (board[3] == board[4]) && (board[3] == board[4])
+        || (board[3] == board[4]) && (board[4] == board[5])
         || (board[6] == board[7]) && (board[7] == board[8])
         || (board[0] == board[3]) && (board[3] == board[6])
         || (board[0] == board[4]) && (board[4] == board[8])
@@ -45,6 +55,7 @@ fn winner(board: [&str; 9]) -> bool {
         || (board[2] == board[5]) && (board[5] == board[8])
         || (board[2] == board[4]) && (board[4] == board[6])
 }
+
 
 fn available(board: [&str; 9], placement: usize) -> bool {
     board[placement] != "X" && board[placement] != "O"
@@ -62,15 +73,14 @@ fn main() {
         }
         // clear();
         draw_board(board);
-        println!("Player {}, place your marker: ", player);
-        let player_move = get_move();
-        let move_ = player_move.parse::<usize>().unwrap() - 1;
-        if available(board, move_) {
+        println!("Player {}, place your marker: ", colourize(player.to_string()));
+        let move_ = get_move();
+        if available(board, move_) {    
             turns += 1;
             board[move_] = player;
             if winner(board) {
                 clear();
-                println!("Player {} wins in move {}!!", player, turns);
+                println!("Player {} wins on move {}!!", player, turns);
                 draw_board(board);
                 break;
             }
