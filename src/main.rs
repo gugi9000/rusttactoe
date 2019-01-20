@@ -15,7 +15,7 @@ fn colourize(piece: String) -> String {
 }
 
 fn draw_board(board: [&str; 9]) {
-    let tab = "       ";
+    let tab = " ".repeat(9);
     println!("");
     println!(
         "{} {} | {} | {}",
@@ -48,7 +48,13 @@ fn get_move() -> usize {
         let input: String = read!("{}\n");
         input.trim().to_string();
         match input.parse::<i32>() {
-            Ok(_) => return input.parse::<usize>().unwrap() - 1,
+            Ok(_) => {
+                let move_ = input.parse::<usize>().unwrap();
+                match move_ {
+                    1...9 => return move_ - 1,
+                    _ => println!("Outside the board.. 🤦‍"),
+                }
+            }
             Err(_) => println!("Invalid input."),
         }
     }
