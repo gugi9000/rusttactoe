@@ -15,18 +15,31 @@ fn colourize(piece: String) -> String {
 }
 
 fn draw_board(board: [&str; 9]) {
-    // let mut i = 0;
-    // for e in board.iter() {
-    // Some iterative to loop over board and draw it
-    //     println!("{}", e);
-    // }
     let tab = "       ";
     println!("");
-    println!("{} {} | {} | {}", tab, colourize(board[0].to_string()), colourize(board[1].to_string()),colourize(board[2].to_string()));
+    println!(
+        "{} {} | {} | {}",
+        tab,
+        colourize(board[0].to_string()),
+        colourize(board[1].to_string()),
+        colourize(board[2].to_string())
+    );
     println!("{}--- --- ---", tab);
-    println!("{} {} | {} | {}", tab, colourize(board[3].to_string()),colourize(board[4].to_string()),colourize(board[5].to_string()));
+    println!(
+        "{} {} | {} | {}",
+        tab,
+        colourize(board[3].to_string()),
+        colourize(board[4].to_string()),
+        colourize(board[5].to_string())
+    );
     println!("{}--- --- ---", tab);
-    println!("{} {} | {} | {}", tab, colourize(board[6].to_string()),colourize(board[7].to_string()),colourize(board[8].to_string()));
+    println!(
+        "{} {} | {} | {}",
+        tab,
+        colourize(board[6].to_string()),
+        colourize(board[7].to_string()),
+        colourize(board[8].to_string())
+    );
     println!("");
 }
 
@@ -35,17 +48,13 @@ fn get_move() -> usize {
         let input: String = read!("{}\n");
         input.trim().to_string();
         match input.parse::<i32>() {
-            Ok( _) => return input.parse::<usize>().unwrap() - 1,
+            Ok(_) => return input.parse::<usize>().unwrap() - 1,
             Err(_) => println!("Invalid input."),
         }
-
     }
 }
 
 fn winner(board: [&str; 9]) -> bool {
-    // 012
-    // 345
-    // 678
     (board[0] == board[1]) && (board[1] == board[2])
         || (board[3] == board[4]) && (board[4] == board[5])
         || (board[6] == board[7]) && (board[7] == board[8])
@@ -55,7 +64,6 @@ fn winner(board: [&str; 9]) -> bool {
         || (board[2] == board[5]) && (board[5] == board[8])
         || (board[2] == board[4]) && (board[4] == board[6])
 }
-
 
 fn available(board: [&str; 9], placement: usize) -> bool {
     board[placement] != "X" && board[placement] != "O"
@@ -71,11 +79,13 @@ fn main() {
             println!("Game has tied.");
             break;
         }
-        // clear();
         draw_board(board);
-        println!("Player {}, place your marker: ", colourize(player.to_string()));
+        println!(
+            "Player {}, place your marker: ",
+            colourize(player.to_string())
+        );
         let move_ = get_move();
-        if available(board, move_) {    
+        if available(board, move_) {
             turns += 1;
             board[move_] = player;
             if winner(board) {
