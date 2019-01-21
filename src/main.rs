@@ -6,11 +6,12 @@ use std::io::Write;
 
 fn clear() {
     // TODO: Make this work on Windows #1
+    // NOTE: Should work on Windows ?
     print!("{}[2J", 27 as char);
 }
 
-fn colourize(piece: String) -> String {
-    match piece.as_ref() {
+fn colourize(piece: &str) -> String {
+    match piece {
         "X" => Colour::Blue.bold().paint(piece).to_string(),
         "O" => Colour::Yellow.bold().paint(piece).to_string(),
         _ => piece.to_string(),
@@ -23,47 +24,38 @@ fn draw_board(board: [&str; 9]) {
     println!(
         "{} {} | {} | {}",
         tab,
-        colourize(board[0].to_string()),
-        colourize(board[1].to_string()),
-        colourize(board[2].to_string())
+        colourize(&board[0]),
+        colourize(&board[1]),
+        colourize(&board[2])
     );
     println!("{}--- --- ---", tab);
     println!(
         "{} {} | {} | {}",
         tab,
-        colourize(board[3].to_string()),
-        colourize(board[4].to_string()),
-        colourize(board[5].to_string())
+        colourize(&board[3]),
+        colourize(&board[4]),
+        colourize(&board[5])
     );
     println!("{}--- --- ---", tab);
     println!(
         "{} {} | {} | {}",
         tab,
-        colourize(board[6].to_string()),
-        colourize(board[7].to_string()),
-        colourize(board[8].to_string())
+        colourize(&board[6]),
+        colourize(&board[7]),
+        colourize(&board[8])
     );
     println!("");
 }
 
 fn get_move(player: &str) -> usize {
-    // TODO: Make this work on Windows #1
     loop {
-        print!(
-            "Player {}, place your marker: ",
-            colourize(player.to_string())
-        );
+        print!("Player {}, place your marker: ", colourize(&player));
         stdout().flush().expect("Could not flush stdout.");
         let input: String = read!("{}\n");
-        input.trim().to_string();
-        match input.parse::<i32>() {
-            Ok(_) => {
-                let move_ = input.parse::<usize>().unwrap();
-                match move_ {
-                    1...9 => return move_ - 1,
-                    _ => println!("Outside the board.. 🤦‍"),
-                }
-            }
+
+        match input.trim().parse::<usize>() {
+            Ok(n @ 1...9) => return n - 1,
+            Ok(_) => println!("Outside the board.. 🤦‍"),
             Err(_) => println!("Invalid input."),
         }
     }
