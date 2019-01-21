@@ -5,6 +5,7 @@ use std::io::stdout;
 use std::io::Write;
 
 fn clear() {
+    // TODO: Make this work on Windows #1
     print!("{}[2J", 27 as char);
 }
 
@@ -46,6 +47,7 @@ fn draw_board(board: [&str; 9]) {
 }
 
 fn get_move(player: &str) -> usize {
+    // TODO: Make this work on Windows #1
     loop {
         print!(
             "Player {}, place your marker: ",
