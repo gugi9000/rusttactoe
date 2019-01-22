@@ -133,18 +133,18 @@ fn main() {
             break;
         }
 
-        let mut play_square;
-        loop {
+        let play_square = loop {
             board.draw();
 
             let play = player.get_move();
-            play_square = &mut board.board[play];
+            let play_square = &mut board.board[play];
+            
             if play_square.is_none() {
-                break
+                break play_square;
             } else {
                 println!("Invalid move. Try again.");
             }
-        }
+        };
         *play_square = Some(player);
         if board.winner() {
             clear();
