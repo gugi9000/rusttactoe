@@ -126,29 +126,33 @@ fn main() {
     let mut player = Player::X;
 
     for turn in 1.. {
-        board.draw();
-
         if turn > board.board.len() {
+            board.draw();
             println!("Turns out there are no available spots left.");
             println!("Game has tied.");
             break;
         }
 
-        let play = player.get_move();
-        let play_square = &mut board.board[play];
-        if play_square.is_none() {
-            *play_square = Some(player);
-            if board.winner() {
-                clear();
-                println!("Player {} wins on move {}!!", player, turn);
-                board.draw();
-                break;
-            }
-            player = !player;
-        } else {
-            println!("Invalid move. Try again.");
-        }
+        let mut play_square;
+        loop {
+            board.draw();
 
+            let play = player.get_move();
+            play_square = &mut board.board[play];
+            if play_square.is_none() {
+                break
+            } else {
+                println!("Invalid move. Try again.");
+            }
+        }
+        *play_square = Some(player);
+        if board.winner() {
+            clear();
+            println!("Player {} wins on move {}!!", player, turn);
+            board.draw();
+            break;
+        }
+        player = !player;
     }
     println!("Bye!");
 }
