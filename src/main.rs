@@ -1,16 +1,14 @@
 #![warn(clippy::all)]
 
+use ansi_term::Colour;
 use std::{
     fmt::{self, Display},
-    io::{Write, stdout},
+    io::{stdout, Write},
     ops::Not,
 };
 use text_io::{read, try_read, try_scan};
-use ansi_term::Colour;
 
 fn clear() {
-    // TODO: Make this work on Windows #1
-    // NOTE: Should work on Windows ?
     print!("{}[2J", 27 as char);
 }
 
@@ -81,12 +79,22 @@ macro_rules! tab {
 }
 /// 9 spaces
 const TAB: &str = tab!();
-const WIN_CASES: &[(usize, usize, usize)] = &[(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (0, 4, 8), (1, 4, 7), (2, 5, 8), (2, 4, 6)];
+const WIN_CASES: &[(usize, usize, usize)] = &[
+    (0, 1, 2),
+    (3, 4, 5),
+    (6, 7, 8),
+    (0, 3, 6),
+    (0, 4, 8),
+    (1, 4, 7),
+    (2, 5, 8),
+    (2, 4, 6),
+];
 
 impl Board {
     fn field_str(&self, i: usize) -> String {
         let b = self.board[i];
-        b.map(|b| b.colourize()).unwrap_or_else(|| format!("{}", i + 1))
+        b.map(|b| b.colourize())
+            .unwrap_or_else(|| format!("{}", i + 1))
     }
     fn draw_row(&self, i: usize) {
         let off = i * 3;
@@ -138,7 +146,7 @@ fn main() {
 
             let play = player.get_move();
             let play_square = &mut board.board[play];
-            
+
             if play_square.is_none() {
                 break play_square;
             } else {
