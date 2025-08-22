@@ -2,11 +2,11 @@
 
 use std::{
     fmt::{self, Display},
-    io::{Write, stdout},
     ops::Not,
 };
-use text_io::{read, try_read, try_scan};
 use ansi_term::Colour;
+
+use crate::ctrls::Controllers;
 
 fn clear() {
     // TODO: Make this work on Windows #1
@@ -36,19 +36,6 @@ impl Player {
         .bold()
         .paint(self.as_str())
         .to_string()
-    }
-    fn get_move(self) -> usize {
-        loop {
-            print!("Player {}, place your marker: ", self.colourize());
-            stdout().flush().expect("Could not flush stdout.");
-            let input: String = read!("{}\n");
-
-            match input.trim().parse::<usize>() {
-                Ok(n @ 1..=9) => return n - 1,
-                Ok(_) => println!("Outside the board.. 🤦‍"),
-                Err(_) => println!("Invalid input."),
-            }
-        }
     }
 }
 
@@ -81,7 +68,7 @@ macro_rules! tab {
 }
 /// 9 spaces
 const TAB: &str = tab!();
-const WIN_CASES: &[(usize, usize, usize)] = &[(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (0, 4, 8), (1, 4, 7), (2, 5, 8), (2, 4, 6)];
+const WIN_CASES: [(usize, usize, usize); 8] = [(0, 1, 2), (3, 4, 5), (6, 7, 8), (0, 3, 6), (0, 4, 8), (1, 4, 7), (2, 5, 8), (2, 4, 6)];
 
 impl Board {
     fn field_str(&self, i: usize) -> String {
@@ -121,9 +108,16 @@ impl Board {
     }
 }
 
+mod ctrls;
+
 fn main() {
     let mut board = Board::default();
     let mut player = Player::X;
+
+    let controllers = match Controllers::new_from_env_args() {
+        Ok(c) => c,
+        Err(e) => return eprintln!("{e}"),
+    };
 
     for turn in 1.. {
         if turn > board.board.len() {
@@ -136,7 +130,7 @@ fn main() {
         let play_square = loop {
             board.draw();
 
-            let play = player.get_move();
+            let play = controllers.get_move(player, &board);
             let play_square = &mut board.board[play];
             
             if play_square.is_none() {
